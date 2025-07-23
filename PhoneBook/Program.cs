@@ -1,3 +1,4 @@
 ﻿using PhoneBook.UI;
 
-Menu.ShowMenu();
+Menu menu = new();
+menu.Show();

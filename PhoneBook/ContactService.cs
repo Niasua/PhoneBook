@@ -7,10 +7,11 @@ public class ContactService
 {
     private readonly PhoneBookContext db = new();
 
-    public void AddContact(Contact contact)
+    public bool AddContact(Contact contact)
     {
         db.Add(contact);
         db.SaveChanges();
+        return true;
     }
 
     public List<Contact> GetAllContacts()

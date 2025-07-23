@@ -3,66 +3,117 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PhoneBook.UI;
 
-public static class Menu
+public class Menu
 {
-    public static void ShowMenu()
+    public static ContactService contactService { get; set; } = new();
+    public void Show()
     {
-        var option = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-            .Title("[blue]Phone Book Menu[/]")
-            .AddChoices(new[]
-            {
-                "Add Contact", "View Contacts", "Edit Contact","Delete Contact", "Exit"
-            }));
+        bool exit = false;
 
-        switch (option)
+        while (!exit)
         {
-            case "Add Contact":
+            Console.Clear();
+            var option = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                .Title("[blue]Phone Book Menu[/]")
+                .AddChoices(new[]
+                {
+                    "Add Contact", "View Contacts", "Edit Contact","Delete Contact", "Exit"
+                }));
 
-                AddContact();
+            switch (option)
+            {
+                case "Add Contact":
 
-                break;
+                    AddContact();
 
-            case "View Contacts":
+                    break;
 
-                ViewContacts();
+                case "View Contacts":
 
-                break;
+                    ViewContacts();
 
-            case "Edit Contact":
+                    break;
 
-                EditContact();
+                case "Edit Contact":
 
-                break;
+                    EditContact();
 
-            case "Delete Contact":
+                    break;
 
-                DeleteContact();
+                case "Delete Contact":
 
-                break;
+                    DeleteContact();
 
-            case "Exit":
+                    break;
 
-                break;
+                case "Exit":
+
+                    exit = true;
+
+                    break;
+            }
         }
     }
 
-    private static void DeleteContact()
+    private static void AddContact()
     {
-        throw new NotImplementedException();
-    }
+        while (true)
+        {
+            AnsiConsole.MarkupLine("[green]Add Contact [red](Type 'zzz' to return to menu)[/][/]\n");
 
-    private static void EditContact()
-    {
-        throw new NotImplementedException();
-    }
+            AnsiConsole.MarkupLine("[green]Name:[/]");
+            var name = Console.ReadLine();
+            if (name.ToLower() == "zzz") break;
+            if (string.IsNullOrEmpty(name)) continue;
 
+            AnsiConsole.MarkupLine("\n[green]Email:[/]");
+            var email = Console.ReadLine();
+            if (email.ToLower() == "zzz") break;
+            if (!Validator.Validator.IsValidEmail(email))
+            {
+                AnsiConsole.MarkupLine("[red]Invalid email format![/]");
+                continue;
+            }
+
+            AnsiConsole.MarkupLine("\n[green]Phone Number:[/]");
+            var pNumber = Console.ReadLine();
+            if (pNumber.ToLower() == "zzz") break;
+            if (!Validator.Validator.IsValidPhone(pNumber))
+            {
+                AnsiConsole.MarkupLine("[red]Invalid phone number! Use only digits, dashes, or spaces.[/]");
+                continue;
+            }
+
+            var contact = new Models.Contact
+            {
+                Name = name,
+                Email = email,
+                PhoneNumber = pNumber
+            };
+
+            if (contactService.AddContact(contact))
+            {
+                AnsiConsole.MarkupLine("[green]Contact succesfully added![/]");
+                AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
+                Console.ReadKey();
+                break;   
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]Contact cannot be added![/]");
+            }
+        }
+    }
     private static void ViewContacts()
     {
         throw new NotImplementedException();
     }
-
-    private static void AddContact()
+    private static void EditContact()
+    {
+        throw new NotImplementedException();
+    }
+    private static void DeleteContact()
     {
         throw new NotImplementedException();
     }
