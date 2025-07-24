@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Spectre.Console;
 using System.ComponentModel.DataAnnotations;
 
 namespace PhoneBook.UI;
@@ -175,7 +176,73 @@ public class Menu
     }
     private static void EditContact()
     {
-        throw new NotImplementedException();
+        while (true)
+        {
+            Console.Clear();
+            AnsiConsole.MarkupLine("[green]Edit Contact Menu [red](Type 'zzz' to return to menu)[/][/]\n");
+
+            AnsiConsole.MarkupLine("[green]Name:[/]");
+            var name = Console.ReadLine();
+            if (name.ToLower() == "zzz") break;
+            if (string.IsNullOrEmpty(name)) continue;
+
+
+            var contact = contactService.GetContactByName(name);
+
+            if (contact == null)
+            {
+                AnsiConsole.MarkupLine("[red]Contact not found.[/]");
+                AnsiConsole.MarkupLine("\n[grey]Press any key to go back...[/]");
+                Console.ReadKey();
+                continue;
+            }
+
+            AnsiConsole.MarkupLine("\n[green]You've selected this contact:[/]");
+
+            ContactDisplay.ShowContact(contact);
+
+            AnsiConsole.MarkupLine("\n[bold]Do you want to edit this contact? (y/n)[/]");
+            var input = Console.ReadLine();
+            if (input.ToLower() != "y") break;
+
+            AnsiConsole.MarkupLine("[green]\nName (press Enter to keep current):[/]");
+            var newName = Console.ReadLine();
+            if (newName.ToLower() == "zzz") break;
+            if (newName == "") newName = contact.Name;
+            if (string.IsNullOrEmpty(newName)) continue;
+
+            AnsiConsole.MarkupLine("\n[green]Email (press Enter to keep current):[/]");
+            var newEmail = Console.ReadLine();
+            if (newEmail.ToLower() == "zzz") break;
+            if (newEmail == "") newEmail = contact.Email;
+            if (!Validator.Validator.IsValidEmail(newEmail))
+            {
+                AnsiConsole.MarkupLine("[red]Invalid email format![/]");
+                continue;
+            }
+
+            AnsiConsole.MarkupLine("\n[green]Phone Number (press Enter to keep current):[/]");
+            var newPNumber = Console.ReadLine();
+            if (newPNumber.ToLower() == "zzz") break;
+            if (newPNumber == "") newPNumber = contact.PhoneNumber;
+            if (!Validator.Validator.IsValidPhone(newPNumber))
+            {
+                AnsiConsole.MarkupLine("[red]Invalid phone number! Use only digits, dashes, or spaces.[/]");
+                continue;
+            }
+
+            if (contactService.ModifyContact(contact.Id, newName, newEmail, newPNumber))
+            {
+                AnsiConsole.MarkupLine("\n[green]Contact succesfully modified![/]");
+                AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
+                Console.ReadKey();
+                break;
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("\n[red]Contact cannot be modified![/]");
+            }
+        }
     }
     private static void DeleteContact()
     {
