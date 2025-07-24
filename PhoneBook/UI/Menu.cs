@@ -7,8 +7,8 @@ namespace PhoneBook.UI;
 
 public class Menu
 {
-    public static ContactService contactService { get; set; } = new();
-    public static CategoryService categoryService { get; set; } = new();
+    public static ContactService ContactService { get; set; } = new();
+    public static CategoryService CategoryService { get; set; } = new();
 
     public void Show()
     {
@@ -53,7 +53,7 @@ public class Menu
 
                 case "Categories":
 
-                    CategoriesMenu();
+                    CategoriesMenu.Show();
 
                     break;
 
@@ -96,7 +96,7 @@ public class Menu
             }
 
             AnsiConsole.MarkupLine("\n[green]Category:[/]");
-            var category = Display.SelectCategory(categoryService);
+            var category = Display.SelectCategory(CategoryService);
 
             var contact = new Models.Contact
             {
@@ -106,7 +106,7 @@ public class Menu
                 CategoryId = category.Id
             };
 
-            if (contactService.AddContact(contact))
+            if (ContactService.AddContact(contact))
             {
                 AnsiConsole.MarkupLine("\n[green]Contact succesfully added![/]");
                 AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
@@ -138,7 +138,7 @@ public class Menu
             {
                 case "View all Contacts":
 
-                    var contacts = contactService.GetAllContacts();
+                    var contacts = ContactService.GetAllContacts();
 
                     if (contacts != null)
                     {
@@ -162,7 +162,7 @@ public class Menu
                     if (name.ToLower() == "zzz") break;
                     if (string.IsNullOrEmpty(name)) continue;
 
-                    var contact = contactService.GetContactByName(name);
+                    var contact = ContactService.GetContactByName(name);
 
                     if (contact != null)
                     {
@@ -199,7 +199,7 @@ public class Menu
             if (name.ToLower() == "zzz") break;
             if (string.IsNullOrEmpty(name)) continue;
 
-            var contact = contactService.GetContactByName(name);
+            var contact = ContactService.GetContactByName(name);
 
             if (contact == null)
             {
@@ -251,10 +251,10 @@ public class Menu
 
             if (changeCategory.ToLower() == "y")
             {
-                categoryId = Display.SelectCategory(categoryService).Id;
+                categoryId = Display.SelectCategory(CategoryService).Id;
             }
 
-            if (contactService.ModifyContact(contact.Id, newName, newEmail, newPNumber, categoryId))
+            if (ContactService.ModifyContact(contact.Id, newName, newEmail, newPNumber, categoryId))
             {
                 AnsiConsole.MarkupLine("\n[green]Contact succesfully modified![/]");
                 AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
@@ -279,7 +279,7 @@ public class Menu
             if (name.ToLower() == "zzz") break;
             if (string.IsNullOrEmpty(name)) continue;
 
-            var contact = contactService.GetContactByName(name);
+            var contact = ContactService.GetContactByName(name);
 
             if (contact == null)
             {
@@ -297,7 +297,7 @@ public class Menu
             var input = Console.ReadLine();
             if (input.ToLower() != "y") break;
 
-            if (contactService.DeleteContact(contact.Id))
+            if (ContactService.DeleteContact(contact.Id))
             {
                 AnsiConsole.MarkupLine("\n[green]Contact succesfully removed![/]");
                 AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");

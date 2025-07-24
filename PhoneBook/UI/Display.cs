@@ -72,4 +72,33 @@ public static class Display
 
         return option;    
     }
+
+    public static void ShowCategories(List<Category> categories)
+    {
+        var table = new Table();
+        table.Border(TableBorder.Rounded);
+        table.AddColumn("[yellow]Category[/]");
+
+        foreach (var category in categories)
+        {
+            table.AddRow(
+                category.Name.ToString()
+                );
+        }
+
+        AnsiConsole.Write(table);
+    }
+
+    public static void ShowCategory(Category category)
+    {
+        var table = new Table();
+        table.Border(TableBorder.Rounded);
+        table.AddColumn("[yellow]Category[/]");
+
+        table.AddRow(
+            category.Name.ToString()
+            );
+
+        AnsiConsole.Write(table);
+    }
 }
