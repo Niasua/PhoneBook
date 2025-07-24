@@ -70,6 +70,7 @@ public class Menu
     {
         while (true)
         {
+            Console.Clear();
             AnsiConsole.MarkupLine("[green]Add Contact Menu [red](Type 'zzz' to return to menu)[/][/]\n");
 
             AnsiConsole.MarkupLine("[green]Name:[/]");
@@ -264,6 +265,9 @@ public class Menu
             else
             {
                 AnsiConsole.MarkupLine("\n[red]Contact cannot be modified![/]");
+                AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
+                Console.ReadKey();
+                break;
             }
         }
     }
@@ -307,6 +311,9 @@ public class Menu
             else
             {
                 AnsiConsole.MarkupLine("\n[red]Contact cannot be removed![/]");
+                AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
+                Console.ReadKey();
+                break;
             }
         }
     }

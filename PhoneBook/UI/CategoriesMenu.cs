@@ -20,7 +20,7 @@ public static class CategoriesMenu
                 .Title("[blue]Categores Menu[/]")
                 .AddChoices(new[]
                 {
-                    "Add Category", "View Categories", "Edit Categories","Delete Categories", "Back"
+                    "Add Category", "View Categories", "Edit Category","Delete Category", "Back"
                 }));
 
             switch (option)
@@ -201,6 +201,9 @@ public static class CategoriesMenu
             else
             {
                 AnsiConsole.MarkupLine("\n[red]Category cannot be modified![/]");
+                AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
+                Console.ReadKey();
+                break;
             }
         }
     }
@@ -232,7 +235,19 @@ public static class CategoriesMenu
 
             AnsiConsole.MarkupLine("\n[bold]Are you sure you want to remove this category? (y/n)[/]");
             var input = Console.ReadLine();
-            if (input.ToLower() != "y") break;
+            if (input.ToLower() != "y")
+            {
+                AnsiConsole.MarkupLine("[yellow]Deletion cancelled.[/]");
+                Console.ReadKey();
+                continue;
+            }
+
+            if (category.Contacts.Any())
+            {
+                AnsiConsole.MarkupLine("[red]Cannot delete category with assigned contacts.[/]");
+                Console.ReadKey();
+                continue;
+            }
 
             if (categoryService.DeleteCategory(category.Id))
             {
@@ -244,6 +259,9 @@ public static class CategoriesMenu
             else
             {
                 AnsiConsole.MarkupLine("\n[red]Category cannot be removed![/]");
+                AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
+                Console.ReadKey();
+                break;
             }
         }
     }
