@@ -1,7 +1,7 @@
 ﻿using PhoneBook.Data;
 using PhoneBook.Models;
 
-namespace PhoneBook;
+namespace PhoneBook.Services;
 
 public class ContactService
 {
