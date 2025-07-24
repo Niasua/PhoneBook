@@ -95,14 +95,14 @@ public class Menu
 
             if (contactService.AddContact(contact))
             {
-                AnsiConsole.MarkupLine("[green]Contact succesfully added![/]");
+                AnsiConsole.MarkupLine("\n[green]Contact succesfully added![/]");
                 AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
                 Console.ReadKey();
                 break;   
             }
             else
             {
-                AnsiConsole.MarkupLine("[red]Contact cannot be added![/]");
+                AnsiConsole.MarkupLine("\n[red]Contact cannot be added![/]");
             }
         }
     }
@@ -186,7 +186,6 @@ public class Menu
             if (name.ToLower() == "zzz") break;
             if (string.IsNullOrEmpty(name)) continue;
 
-
             var contact = contactService.GetContactByName(name);
 
             if (contact == null)
@@ -246,6 +245,45 @@ public class Menu
     }
     private static void DeleteContact()
     {
-        throw new NotImplementedException();
+        while (true)
+        {
+            Console.Clear();
+            AnsiConsole.MarkupLine("[green]Delete Contact Menu [red](Type 'zzz' to return to menu)[/][/]\n");
+
+            AnsiConsole.MarkupLine("[green]Name:[/]");
+            var name = Console.ReadLine();
+            if (name.ToLower() == "zzz") break;
+            if (string.IsNullOrEmpty(name)) continue;
+
+            var contact = contactService.GetContactByName(name);
+
+            if (contact == null)
+            {
+                AnsiConsole.MarkupLine("[red]Contact not found.[/]");
+                AnsiConsole.MarkupLine("\n[grey]Press any key to go back...[/]");
+                Console.ReadKey();
+                continue;
+            }
+
+            AnsiConsole.MarkupLine("\n[green]You've selected this contact:[/]");
+
+            ContactDisplay.ShowContact(contact);
+
+            AnsiConsole.MarkupLine("\n[bold]Are you sure you want to remove this contact? (y/n)[/]");
+            var input = Console.ReadLine();
+            if (input.ToLower() != "y") break;
+
+            if (contactService.DeleteContact(contact.Id))
+            {
+                AnsiConsole.MarkupLine("\n[green]Contact succesfully removed![/]");
+                AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
+                Console.ReadKey();
+                break;
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("\n[red]Contact cannot be removed![/]");
+            }
+        }
     }
 }
