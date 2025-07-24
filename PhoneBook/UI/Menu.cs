@@ -8,6 +8,8 @@ namespace PhoneBook.UI;
 public class Menu
 {
     public static ContactService contactService { get; set; } = new();
+    public static CategoryService categoryService { get; set; } = new();
+
     public void Show()
     {
         bool exit = false;
@@ -20,7 +22,7 @@ public class Menu
                 .Title("[blue]Phone Book Menu[/]")
                 .AddChoices(new[]
                 {
-                    "Add Contact", "View Contacts", "Edit Contact","Delete Contact", "Exit"
+                    "Add Contact", "View Contacts", "Edit Contact","Delete Contact", "Categories", "Exit"
                 }));
 
             switch (option)
@@ -46,6 +48,12 @@ public class Menu
                 case "Delete Contact":
 
                     DeleteContact();
+
+                    break;
+
+                case "Categories":
+
+                    CategoriesMenu();
 
                     break;
 
@@ -87,11 +95,15 @@ public class Menu
                 continue;
             }
 
+            AnsiConsole.MarkupLine("\n[green]Category:[/]");
+            var category = Display.SelectCategory(categoryService);
+
             var contact = new Models.Contact
             {
                 Name = name,
                 Email = email,
-                PhoneNumber = pNumber
+                PhoneNumber = pNumber,
+                CategoryId = category.Id
             };
 
             if (contactService.AddContact(contact))
@@ -113,7 +125,7 @@ public class Menu
         while (!exit)
         {
             Console.Clear();
-            AnsiConsole.MarkupLine("[green]View Contact Menu [red](Type 'zzz' to return to menu)[/][/]\n");
+            AnsiConsole.MarkupLine("[green]View Contact Menu[/]\n");
 
             var submenu = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
@@ -130,7 +142,7 @@ public class Menu
 
                     if (contacts != null)
                     {
-                        ContactDisplay.ShowContacts(contacts);
+                        Display.ShowContacts(contacts);
                         AnsiConsole.MarkupLine("\n[grey]Press any key to go back...[/]");
                         Console.ReadKey();
                     }
@@ -145,7 +157,7 @@ public class Menu
 
                 case "Search Contact":
 
-                    AnsiConsole.MarkupLine("[green]Type your contact's [yellow]name[/]:[/]");
+                    AnsiConsole.MarkupLine("[green]Type your contact's [yellow]name[/] [red](Type 'zzz' to return to menu)[/]:[/]");
                     var name = Console.ReadLine();
                     if (name.ToLower() == "zzz") break;
                     if (string.IsNullOrEmpty(name)) continue;
@@ -154,7 +166,7 @@ public class Menu
 
                     if (contact != null)
                     {
-                        ContactDisplay.ShowContact(contact);
+                        Display.ShowContact(contact);
                         AnsiConsole.MarkupLine("\n[grey]Press any key to go back...[/]");
                         Console.ReadKey();
                     }
@@ -199,7 +211,7 @@ public class Menu
 
             AnsiConsole.MarkupLine("\n[green]You've selected this contact:[/]");
 
-            ContactDisplay.ShowContact(contact);
+            Display.ShowContact(contact);
 
             AnsiConsole.MarkupLine("\n[bold]Do you want to edit this contact? (y/n)[/]");
             var input = Console.ReadLine();
@@ -231,7 +243,18 @@ public class Menu
                 continue;
             }
 
-            if (contactService.ModifyContact(contact.Id, newName, newEmail, newPNumber))
+            AnsiConsole.MarkupLine("\n[green]Category:[/]");
+            AnsiConsole.MarkupLine("\n[grey]Do you want to change category? (y/n):[/]");
+
+            var changeCategory = Console.ReadLine();
+            var categoryId = contact.CategoryId;
+
+            if (changeCategory.ToLower() == "y")
+            {
+                categoryId = Display.SelectCategory(categoryService).Id;
+            }
+
+            if (contactService.ModifyContact(contact.Id, newName, newEmail, newPNumber, categoryId))
             {
                 AnsiConsole.MarkupLine("\n[green]Contact succesfully modified![/]");
                 AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
@@ -268,7 +291,7 @@ public class Menu
 
             AnsiConsole.MarkupLine("\n[green]You've selected this contact:[/]");
 
-            ContactDisplay.ShowContact(contact);
+            Display.ShowContact(contact);
 
             AnsiConsole.MarkupLine("\n[bold]Are you sure you want to remove this contact? (y/n)[/]");
             var input = Console.ReadLine();
