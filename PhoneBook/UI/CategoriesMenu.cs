@@ -5,8 +5,8 @@ namespace PhoneBook.UI;
 
 public static class CategoriesMenu
 {
-    public static ContactService contactService { get; set; } = new();
-    public static CategoryService categoryService { get; set; } = new();
+    public static ContactService ContactService { get; set; } = new();
+    public static CategoryService CategoryService { get; set; } = new();
 
     public static void Show()
     {
@@ -74,7 +74,7 @@ public static class CategoriesMenu
                 Name = name
             };
 
-            if (categoryService.AddCategory(category))
+            if (CategoryService.AddCategory(category))
             {
                 AnsiConsole.MarkupLine("\n[green]Category succesfully added![/]");
                 AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
@@ -106,7 +106,7 @@ public static class CategoriesMenu
             {
                 case "View all Categories":
 
-                    var categories = categoryService.GetAllCategories();
+                    var categories = CategoryService.GetAllCategories();
 
                     if (categories != null)
                     {
@@ -130,7 +130,7 @@ public static class CategoriesMenu
                     if (name.ToLower() == "zzz") break;
                     if (string.IsNullOrEmpty(name)) continue;
 
-                    var category = categoryService.GetCategoryByName(name);
+                    var category = CategoryService.GetCategoryByName(name);
 
                     if (category != null)
                     {
@@ -167,7 +167,7 @@ public static class CategoriesMenu
             if (name.ToLower() == "zzz") break;
             if (string.IsNullOrEmpty(name)) continue;
 
-            var category = categoryService.GetCategoryByName(name);
+            var category = CategoryService.GetCategoryByName(name);
 
             if (category == null)
             {
@@ -191,7 +191,7 @@ public static class CategoriesMenu
             if (newName == "") newName = category.Name;
             if (string.IsNullOrEmpty(newName)) continue;
 
-            if (categoryService.ModifyCategory(name, newName))
+            if (CategoryService.ModifyCategory(name, newName))
             {
                 AnsiConsole.MarkupLine("\n[green]Category succesfully modified![/]");
                 AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
@@ -219,7 +219,7 @@ public static class CategoriesMenu
             if (name.ToLower() == "zzz") break;
             if (string.IsNullOrEmpty(name)) continue;
 
-            var category = categoryService.GetCategoryByName(name);
+            var category = CategoryService.GetCategoryByName(name);
 
             if (category == null)
             {
@@ -249,7 +249,7 @@ public static class CategoriesMenu
                 continue;
             }
 
-            if (categoryService.DeleteCategory(category.Id))
+            if (CategoryService.DeleteCategory(category.Id))
             {
                 AnsiConsole.MarkupLine("\n[green]Category succesfully removed![/]");
                 AnsiConsole.MarkupLine("[grey]Press any key to return to menu...[/]");
