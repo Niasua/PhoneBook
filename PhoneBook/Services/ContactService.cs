@@ -9,7 +9,14 @@ public class ContactService
 
     public bool AddContact(Contact contact)
     {
-        db.Add(contact);
+        if (contact == null || string.IsNullOrWhiteSpace(contact.Name))
+            return false;
+
+        var exists = db.Contacts.Any(c => c.Name.ToLower() == contact.Name.ToLower());
+        if (exists)
+            return false;
+
+        db.Contacts.Add(contact);
         db.SaveChanges();
         return true;
     }
@@ -27,7 +34,7 @@ public class ContactService
             .FirstOrDefault(c => c.Name.ToLower().Trim() == name.ToLower().Trim());
     }
 
-    public bool ModifyContact(int id, string name, string email, string phoneNumber)
+    public bool ModifyContact(int id, string name, string email, string phoneNumber, int? categoryId)
     {
         var contact = db.Contacts.FirstOrDefault(c => c.Id == id);
 
@@ -40,6 +47,7 @@ public class ContactService
         contact.Name = name;
         contact.Email = email;
         contact.PhoneNumber = phoneNumber;
+        contact.CategoryId = categoryId;
 
         db.SaveChanges();
 
