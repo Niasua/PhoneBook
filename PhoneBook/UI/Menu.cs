@@ -60,7 +60,7 @@ public class Menu
     {
         while (true)
         {
-            AnsiConsole.MarkupLine("[green]Add Contact [red](Type 'zzz' to return to menu)[/][/]\n");
+            AnsiConsole.MarkupLine("[green]Add Contact Menu [red](Type 'zzz' to return to menu)[/][/]\n");
 
             AnsiConsole.MarkupLine("[green]Name:[/]");
             var name = Console.ReadLine();
@@ -107,7 +107,71 @@ public class Menu
     }
     private static void ViewContacts()
     {
-        throw new NotImplementedException();
+        var exit = false;
+        while (!exit)
+        {
+            Console.Clear();
+            AnsiConsole.MarkupLine("[green]View Contact Menu [red](Type 'zzz' to return to menu)[/][/]\n");
+
+            var submenu = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                .AddChoices(new[]
+                {
+                    "View all Contacts", "Search Contact", "Back"
+                }));
+
+            switch (submenu)
+            {
+                case "View all Contacts":
+
+                    var contacts = contactService.GetAllContacts();
+
+                    if (contacts != null)
+                    {
+                        ContactDisplay.ShowContacts(contacts);
+                        AnsiConsole.MarkupLine("\n[grey]Press any key to go back...[/]");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        AnsiConsole.MarkupLine("[red]Contacts not found.[/]");
+                        AnsiConsole.MarkupLine("\n[grey]Press any key to go back...[/]");
+                        Console.ReadKey();
+                    }
+
+                    break;
+
+                case "Search Contact":
+
+                    AnsiConsole.MarkupLine("[green]Type your contact's [yellow]name[/]:[/]");
+                    var name = Console.ReadLine();
+                    if (name.ToLower() == "zzz") break;
+                    if (string.IsNullOrEmpty(name)) continue;
+
+                    var contact = contactService.GetContactByName(name);
+
+                    if (contact != null)
+                    {
+                        ContactDisplay.ShowContact(contact);
+                        AnsiConsole.MarkupLine("\n[grey]Press any key to go back...[/]");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        AnsiConsole.MarkupLine("[red]Contact not found.[/]");
+                        AnsiConsole.MarkupLine("\n[grey]Press any key to go back...[/]");
+                        Console.ReadKey();
+                    }
+
+                    break;
+
+                case "Back":
+
+                    exit = true;
+
+                    break;
+            }
+        }
     }
     private static void EditContact()
     {
